@@ -8,12 +8,17 @@ import {
   createBrowserRouter,
   RouterProvider,
 } from "react-router-dom";
+import { Profile } from "./features/profile/Profile"
 const container = document.getElementById("root")
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
+  },
+  {
+    path: "/profile",
+    element: <Profile />,
   },
 ]);
 

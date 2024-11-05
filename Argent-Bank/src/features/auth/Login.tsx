@@ -1,7 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import { setCredentials } from './AuthSlice'
 import * as React from 'react'
-import { ProtectedComponent } from './ProtectedComponent'
 import { useLoginMutation } from '../../app/services/auth'
 import type { LoginRequest } from '../../app/services/auth'
 import { useAppDispatch } from '../../app/hooks'
@@ -57,14 +56,15 @@ export const Login = () => {
             type="text"
             placeholder="Email"
           />
-
           <PasswordInput onChange={handleChange} name="password" />
         <button
           onClick={async () => {
             console.log(formState)
             try {
               const response = await login(formState).unwrap()
-              dispatch(setCredentials({token : response.body.token}))
+              console.log(response)
+              dispatch(setCredentials({token : response.token}))
+              navigate('/profile')
             } catch (err) {
               console.log(err)
           }}
@@ -72,8 +72,6 @@ export const Login = () => {
         >
           Login
         </button>
-
-        <ProtectedComponent />
 
     </>
   )
