@@ -1,9 +1,9 @@
 import { useNavigate } from 'react-router-dom'
-import { setCredentials } from './AuthSlice'
-import * as React from 'react'
+import { setCredentials, selectToken } from './AuthSlice'
+import {useEffect, useState} from 'react'
 import { useLoginMutation } from '../../app/services/auth'
 import type { LoginRequest } from '../../app/services/auth'
-import { useAppDispatch } from '../../app/hooks'
+import { useAppDispatch, useAppSelector } from '../../app/hooks'
 
 function PasswordInput({
   name,
@@ -12,7 +12,7 @@ function PasswordInput({
   name: string
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void
 }) {
-  const [show, setShow] = React.useState(false)
+  const [show, setShow] = useState(false)
   const handleClick = () => setShow(!show)
 
   return (
@@ -34,8 +34,8 @@ function PasswordInput({
 export const Login = () => {
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
-
-  const [formState, setFormState] = React.useState<LoginRequest>({
+  const token = useAppSelector(selectToken)
+  const [formState, setFormState] = useState<LoginRequest>({
     email: '',
     password: '',
   })
@@ -47,31 +47,39 @@ export const Login = () => {
   }: React.ChangeEvent<HTMLInputElement>) =>
     setFormState((prev) => ({ ...prev, [name]: value }))
 
+  useEffect(() => {
+    if (token) {
+      navigate('/profile')
+    }
+  }, [navigate, token]
+  )
+
   return (
     <>
-        <div>Hint: enter anything, or leave it blank and hit login</div>
-          <input
-            onChange={handleChange}
-            name="email"
-            type="text"
-            placeholder="Email"
-          />
-          <PasswordInput onChange={handleChange} name="password" />
-        <button
-          onClick={async () => {
-            console.log(formState)
-            try {
-              const response = await login(formState).unwrap()
-              console.log(response)
-              dispatch(setCredentials({token : response.token}))
-              navigate('/profile')
-            } catch (err) {
-              console.log(err)
-          }}
+      <div>Sign In</div>
+      <label htmlFor='email'>Email</label>
+      <input
+        onChange={handleChange}
+        name="email"
+        type="text"
+        placeholder="Email"
+      />
+      <label htmlFor='password'>password</label>
+      <PasswordInput onChange={handleChange} name="password" />
+      <button
+        disabled={isLoading}
+        onClick={async () => {
+          try {
+            const response = await login(formState).unwrap()
+            dispatch(setCredentials({ token: response.token }))
+            navigate('/profile')
+          } catch (err) {
+            console.log(err)
+          }
         }
-        >
-          Login
-        </button>
+        }
+      > Log in
+      </button>
 
     </>
   )

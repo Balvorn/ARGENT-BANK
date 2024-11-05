@@ -4,6 +4,8 @@ import type { RootState } from '../store'
 export interface Profile {
     id: string,
     email: string
+    firstNmae: string,
+    lastName: string
 }
 
 export interface LoginResponse {
@@ -34,17 +36,20 @@ export const api = createApi({
                 method: 'POST',
                 body: credentials,
             }),
-            transformResponse: (data: { body: { token : string} }, meta) => {
+
+            transformResponse: (data: { body: LoginResponse }, meta) => {
+                // store user's token in local storage
                 return data.body
             }
+
         }),
         getProfile: builder.query<Profile, void>({
             query: () => ({
                 url: 'profile',
                 method: 'POST',
             }),
-            transformResponse: (data: { body: { profile: Profile } }, meta) => {
-                return data.body.profile
+            transformResponse: (data: { body: Profile }, meta) => {
+                return data.body
             }
         }),
     }),
