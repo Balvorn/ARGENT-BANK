@@ -34,13 +34,14 @@ const slice = createSlice({
       }: PayloadAction<{ user: Profile }>,
     ) => {
       state.user = user
+
     },
     logout: (state) => {
       localStorage.removeItem('token') // deletes token from storage
       state.user = null
       state.token = null
     },
-  },
+  }
 })
 
 export const { setCredentials, setUser, logout } = slice.actions

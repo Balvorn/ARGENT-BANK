@@ -9,17 +9,29 @@ import {
   RouterProvider,
 } from "react-router-dom";
 import { Profile } from "./features/profile/Profile"
+import Login from "./features/auth/Login"
+import Index from "./app/screens/index/Index"
 const container = document.getElementById("root")
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
-  },
-  {
-    path: "/profile",
-    element: <Profile />,
-  },
+    children: [
+      {
+        path: "profile",
+        element: <Profile />,
+      },
+      {
+        path: "login",
+        element: <Login />,
+      },
+      {
+        index:true,
+        element: <Index />,
+      }
+    ],
+  }
 ]);
 
 if (container) {

@@ -4,7 +4,7 @@ import type { RootState } from '../store'
 export interface Profile {
     id: string,
     email: string
-    firstNmae: string,
+    firstName: string,
     lastName: string
 }
 
@@ -25,8 +25,8 @@ export const api = createApi({
             const token = (getState() as RootState).auth.token
             if (token) {
                 headers.set('Authorization', `Bearer ${token}`)
+                return headers
             }
-            return headers
         },
     }),
     endpoints: (builder) => ({

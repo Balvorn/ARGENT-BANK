@@ -1,9 +1,9 @@
-import { useNavigate } from 'react-router-dom'
-import { setCredentials, selectToken } from './AuthSlice'
-import {useEffect, useState} from 'react'
+import { setCredentials } from './AuthSlice'
+import { useState } from 'react'
 import { useLoginMutation } from '../../app/services/auth'
 import type { LoginRequest } from '../../app/services/auth'
-import { useAppDispatch, useAppSelector } from '../../app/hooks'
+import { useAppDispatch } from '../../app/hooks'
+import circleUser from "../../app/img/circle-user-solid.svg"
 
 function PasswordInput({
   name,
@@ -12,20 +12,14 @@ function PasswordInput({
   name: string
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void
 }) {
-  const [show, setShow] = useState(false)
-  const handleClick = () => setShow(!show)
-
   return (
     <>
       <input
-        type={show ? 'text' : 'password'}
+        type= 'password'
         placeholder="Enter password"
         name={name}
         onChange={onChange}
       />
-      <button onClick={handleClick}>
-        {show ? 'Hide' : 'Show'}
-      </button >
     </>
 
   )
@@ -33,8 +27,6 @@ function PasswordInput({
 
 export const Login = () => {
   const dispatch = useAppDispatch()
-  const navigate = useNavigate()
-  const token = useAppSelector(selectToken)
   const [formState, setFormState] = useState<LoginRequest>({
     email: '',
     password: '',
@@ -47,40 +39,48 @@ export const Login = () => {
   }: React.ChangeEvent<HTMLInputElement>) =>
     setFormState((prev) => ({ ...prev, [name]: value }))
 
-  useEffect(() => {
-    if (token) {
-      navigate('/profile')
-    }
-  }, [navigate, token]
-  )
 
   return (
     <>
-      <div>Sign In</div>
-      <label htmlFor='email'>Email</label>
-      <input
-        onChange={handleChange}
-        name="email"
-        type="text"
-        placeholder="Email"
-      />
-      <label htmlFor='password'>password</label>
-      <PasswordInput onChange={handleChange} name="password" />
-      <button
-        disabled={isLoading}
-        onClick={async () => {
-          try {
-            const response = await login(formState).unwrap()
-            dispatch(setCredentials({ token: response.token }))
-            navigate('/profile')
-          } catch (err) {
-            console.log(err)
-          }
-        }
-        }
-      > Log in
-      </button>
-
+      <main className="main bg-dark">
+        <section className="sign-in-content">
+          <img className='fa' src={circleUser} alt='user'></img>
+          <h1>Sign In</h1>
+          <form>
+            <div className="input-wrapper">
+              <label htmlFor='email'>Email</label>
+              <input
+                onChange={handleChange}
+                name="email"
+                type="text"
+                placeholder="Email"
+              />
+            </div>
+            <div className="input-wrapper">
+              <label htmlFor='password'>Password</label>
+              <PasswordInput onChange={handleChange} name="password" />
+            </div>
+            <div className="input-remember">
+              <input type="checkbox" id="remember-me" />
+              <label htmlFor="remember-me">Remember me</label>
+            </div>
+            <button
+              className='sign-in-button'
+              disabled={isLoading}
+              onClick={async () => {
+                try {
+                  const response = await login(formState).unwrap()
+                  dispatch(setCredentials({ token: response.token }))
+                } catch (err) {
+                  console.log(err)
+                }
+              }
+              }
+            > Sign in
+            </button>
+          </form>
+        </section>
+      </main>
     </>
   )
 }
