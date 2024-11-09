@@ -50,7 +50,12 @@ export const api = createApi({
             }),
             transformResponse: (data: { body: Profile }, meta) => {
                 return data.body
-            }
+            },
+            transformErrorResponse: (
+                response: { status: string | number, data? : Error | unknown},
+                meta,
+                arg
+              ) => response.data,
         }),
     }),
 })

@@ -5,26 +5,6 @@ import type { LoginRequest } from '../../app/services/auth'
 import { useAppDispatch } from '../../app/hooks'
 import circleUser from "../../app/img/circle-user-solid.svg"
 
-function PasswordInput({
-  name,
-  onChange,
-}: {
-  name: string
-  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void
-}) {
-  return (
-    <>
-      <input
-        type= 'password'
-        placeholder="Enter password"
-        name={name}
-        onChange={onChange}
-      />
-    </>
-
-  )
-}
-
 export const Login = () => {
   const dispatch = useAppDispatch()
   const [formState, setFormState] = useState<LoginRequest>({
@@ -38,7 +18,6 @@ export const Login = () => {
     target: { name, value },
   }: React.ChangeEvent<HTMLInputElement>) =>
     setFormState((prev) => ({ ...prev, [name]: value }))
-
 
   return (
     <>
@@ -58,7 +37,12 @@ export const Login = () => {
             </div>
             <div className="input-wrapper">
               <label htmlFor='password'>Password</label>
-              <PasswordInput onChange={handleChange} name="password" />
+              <input
+                type='password'
+                placeholder="Enter password"
+                name="password"
+                onChange={handleChange}
+              />
             </div>
             <div className="input-remember">
               <input type="checkbox" id="remember-me" />
