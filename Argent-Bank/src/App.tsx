@@ -7,6 +7,8 @@ import { logout, selectToken, setUser } from './features/auth/AuthSlice'
 import { useAppDispatch, useAppSelector } from "./app/hooks"
 import { useEffect, useState } from "react"
 import { useGetProfileQuery } from "./app/services/auth"
+import { isApiError } from "./utils/helpers"
+import { SnackbarProvider } from "notistack"
 
 const App = () => {
   const location = useLocation()
@@ -14,9 +16,10 @@ const App = () => {
   const navigate = useNavigate()
   const token = useAppSelector(selectToken)
   const [skip, setSkip] = useState(true)
-  let { data, error } = useGetProfileQuery(void 0, {
+  let { data, error } = useGetProfileQuery(undefined, {
     skip
   })
+
 
   useEffect(() => {
     console.log("useeffect")
@@ -31,43 +34,17 @@ const App = () => {
         console.log("nav to profile")
         navigate('/profile')
       }
-      if (data !== undefined ) {
-        console.log(data)
+      if (data !== undefined) {
         dispatch(setUser({ user: data }))
       }
     }
   }, [navigate, location, token, dispatch, data]
   )
 
-  const handleErrors = () => {
-    if (error) {
-      console.log(error)
-      if ('message' in error) {
-        const errMsg = error.message
-        if (errMsg === "jwt expired") {
-          return (
-            <div>
-              <div>Session expired, please sign in:</div>
-              <button className="main-nav-item" onClick={
-                () => {
-                  dispatch(logout())
-                  navigate('/login')
-                }}
-              >Sign in</button>
-            </div>
-          )
-        }
-      }
-      return (
-        <div>
-          <div>an error has occurred, please try again later</div>
-        </div>
-      )
-    }
-  }
-
   return (
     <>
+      {isApiError(error) && <div>{error.data.message}</div>}
+      
       <nav className="main-nav">
         <Link className="main-nav-logo" to={"/"}>
           <img
@@ -100,15 +77,14 @@ const App = () => {
           }
         </div>
       </nav>
-
-      {
-        handleErrors()
-      }
       <Outlet />
+      
       <footer className="footer">
         <p className="footer-text">Copyright 2020 Argent Bank</p>
       </footer>
+      <SnackbarProvider/>
     </>
+    
   )
 }
 export default App

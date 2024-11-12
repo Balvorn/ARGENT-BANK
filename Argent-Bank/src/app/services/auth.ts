@@ -48,14 +48,10 @@ export const api = createApi({
                 url: 'profile',
                 method: 'POST',
             }),
-            transformResponse: (data: { body: Profile }, meta) => {
+            transformResponse: (data: { body: Profile }) => {
                 return data.body
             },
-            transformErrorResponse: (
-                response: { status: string | number, data? : Error | unknown},
-                meta,
-                arg
-              ) => response.data,
+
         }),
     }),
 })

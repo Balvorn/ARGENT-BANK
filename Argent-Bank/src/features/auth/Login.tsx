@@ -4,6 +4,7 @@ import { useLoginMutation } from '../../app/services/auth'
 import type { LoginRequest } from '../../app/services/auth'
 import { useAppDispatch } from '../../app/hooks'
 import circleUser from "../../app/img/circle-user-solid.svg"
+import { isApiError } from '../../utils/helpers'
 
 export const Login = () => {
   const dispatch = useAppDispatch()
@@ -12,7 +13,7 @@ export const Login = () => {
     password: '',
   })
 
-  const [login, { isLoading }] = useLoginMutation()
+  const [login, { isLoading, error }] = useLoginMutation()
 
   const handleChange = ({
     target: { name, value },
@@ -25,6 +26,7 @@ export const Login = () => {
         <section className="sign-in-content">
           <img className='fa' src={circleUser} alt='user'></img>
           <h1>Sign In</h1>
+          {isApiError(error) && <div>{error.data.message}</div>}
           <form>
             <div className="input-wrapper">
               <label htmlFor='email'>Email</label>
