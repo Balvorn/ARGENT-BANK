@@ -53,7 +53,18 @@ export const api = createApi({
             },
 
         }),
+        editProfile: builder.mutation<Profile, { firstName: string, lastName: string }>({
+            query: (profile) => ({
+                url: 'profile',
+                method: 'PUT',
+                body: profile,
+            }),
+            transformResponse: (data: { body: Profile }) => {
+                return data.body
+            },
+
+        }),
     }),
 })
 
-export const { useLoginMutation, useGetProfileQuery } = api
+export const { useLoginMutation, useGetProfileQuery, useEditProfileMutation } = api

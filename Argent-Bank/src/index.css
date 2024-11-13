@@ -93,16 +93,17 @@ body,
   width: 200px;
 }
 
-.nav{
+.nav {
   display: flex;
   justify-content: space-between;
-  button{
+
+  button {
     font-family: inherit;
     border: 0;
     padding: 0;
     background-color: white;
     cursor: pointer;
-    }
+  }
 }
 
 .hero {
@@ -287,6 +288,41 @@ body,
   flex: 1;
 }
 
+.form-wrapper{
+  display: flex;
+  justify-content: center;
+  margin-top: 10px
+}
+
+.edit-form {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  width: 380px;
+  max-width: 90%;
+
+
+  input {
+    font-size: 1rem;
+    color: grey;
+    width: 150px;
+    padding: 10px;
+    margin: 5px;
+  }
+}
+
+.edit-profile-button {
+  border-color: #00bc77;
+  background-color: #00bc77;
+  color: #fff;
+  font-weight: bold;
+  padding:  5px 10px;
+  margin: 5px;
+  font-size: 0.9rem;
+  width: 100px;
+}
+
 .edit-button {
   border-color: #00bc77;
   background-color: #00bc77;
@@ -298,10 +334,23 @@ body,
 .header {
   color: #fff;
   margin-bottom: 2rem;
+  h1{
+
+    margin-bottom: 0;
+  }
+  height: 150px;
+}
+
+.infos{
+  h1{
+    margin: 0;
+    margin-bottom: 15px;
+  }
+ 
+
 }
 
 .transaction-button {
-  display: block;
   width: 100%;
   padding: 8px;
   font-size: 1.1rem;

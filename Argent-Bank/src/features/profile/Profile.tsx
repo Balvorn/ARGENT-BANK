@@ -1,7 +1,25 @@
-import { selectCurrentUser } from '../auth/AuthSlice'
-import { useAppSelector } from '../../app/hooks'
+import { selectCurrentUser, setUser } from '../auth/AuthSlice'
+import { useAppDispatch, useAppSelector } from '../../app/hooks'
+import { useState } from 'react'
+import { useEditProfileMutation } from '../../app/services/auth'
 export function Profile() {
+    const dispatch = useAppDispatch()
     const user = useAppSelector(selectCurrentUser)
+    const [formState, setFormState] = useState<{ firstName: string, lastName: string }>({
+        firstName: "",
+        lastName: "",
+    })
+    const [editProfile, { isLoading, error }] = useEditProfileMutation()
+
+    const handleChange = ({
+        target: { name, value },
+    }: React.ChangeEvent<HTMLInputElement>) =>
+        setFormState((prev) => ({ ...prev, [name]: value }))
+
+    const [editMode, setMode] = useState(false);
+    function toggleMode() {
+        setMode(prevMode => !prevMode)
+    }
 
     return (
         <main className="main bg-dark">
@@ -9,8 +27,65 @@ export function Profile() {
                 user &&
                 <>
                     <div className="header">
-                        <h1>Welcome back<br />{user.firstName} {user.lastName}</h1>
-                        <button className="edit-button">Edit Name</button>
+                        <h1>Welcome back</h1>
+                        {
+                            editMode ?
+                                <div className='form-wrapper'>
+                                    <form className='edit-form'
+                                        onSubmit={async (e) => {
+                                            e.preventDefault()
+                                            try {
+                                                const response = await editProfile(formState).unwrap()
+                                                dispatch(setUser({ user: response }))
+                                                toggleMode()
+                                            } catch (err) {
+                                                console.log(err)
+                                            }
+                                        }
+                                        }>
+                                        <div >
+                                            <input
+                                                minLength={2}
+                                                required
+                                                onChange={handleChange}
+                                                name="firstName"
+                                                type="text"
+                                                placeholder={user.firstName}
+                                            />
+                                        </div>
+                                        <div>
+                                            <input
+                                                minLength={2}
+                                                required
+                                                type='text'
+                                                placeholder={user.lastName}
+                                                name="lastName"
+                                                onChange={handleChange}
+                                            />
+                                        </div>
+                                        <div>
+                                            <button
+                                                className='edit-profile-button'
+                                                type="submit"
+                                                disabled={isLoading}
+                                            > Save
+                                            </button>
+
+                                            <button
+                                                className='edit-profile-button'
+                                                disabled={isLoading}
+                                                onClick={toggleMode}
+                                            > Cancel
+                                            </button></div>
+
+                                    </form>
+                                </div>
+                                :
+                                <div className='infos'>
+                                    <h1>{user.firstName} {user.lastName}</h1>
+                                    <button className="edit-button" onClick={toggleMode}>Edit Name</button>
+                                </div>
+                        }
                     </div>
                     <h2 className="sr-only">Accounts</h2>
                     <section className="account">
